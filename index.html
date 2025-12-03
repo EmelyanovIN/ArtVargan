@@ -10,7 +10,7 @@
     <meta property="og:description" content="Современная живопись и графика. Авторские картины, наполняющие пространство смыслом.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://emelyanovin.github.io/ArtVargan/">
-    <meta property="og:image" content="https://emelyanovin.github.io/ArtVargan/img/me.jpg">
+    <meta property="og:image" content="https://emelyanovin.github.io/ArtVargan/img/art1.jpg">
 
     <!-- Иконка -->
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
@@ -46,13 +46,16 @@
         </div>
     </header>
 
-    <!-- HERO -->
+    <!-- HERO (С ПАРАЛЛАКСОМ) -->
     <section class="hero">
-        <div class="container hero-content">
+        <!-- Фоновая картинка для параллакса -->
+        <div class="hero-bg" id="hero-bg"></div>
+        
+        <div class="container hero-content" id="hero-content">
             <h1 class="reveal">Искусство момента</h1>
             <p class="reveal delay-100">Живопись, графика и визуальные эксперименты.</p>
             <div class="reveal delay-200">
-                <a href="#gallery" class="btn">Смотреть работы</a>
+                <a href="#gallery" class="btn btn-hero">Смотреть работы</a>
             </div>
         </div>
     </section>
@@ -251,49 +254,37 @@
         lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
     }
 
-    // --- ГЛАВНАЯ ФУНКЦИЯ СМЕНЫ СЛАЙДА (ЭФФЕКТ КОЛОДЫ) ---
+    // СМЕНА СЛАЙДА
     function showImage(index, direction = 'none') {
         if (index >= allImages.length) index = 0;
         if (index < 0) index = allImages.length - 1;
 
-        // Если это анимация (уже открыто окно), делаем эффект колоды
         if (direction !== 'none' && lightbox.classList.contains('active')) {
-            
-            // 1. Клон - это СТАРАЯ картинка, которая будет лежать СВЕРХУ и уезжать
             const clone = lightboxImg.cloneNode();
-            clone.src = lightboxImg.src; // Фиксируем старую картинку
-            clone.style.transform = `translate(0, 0) scale(1)`; // Сброс трансформаций
-            clone.classList.add('anim-clone-top'); // Класс "Я сверху"
+            clone.src = lightboxImg.src;
+            clone.style.transform = `translate(0, 0) scale(1)`;
+            clone.classList.add('anim-clone-top');
             lightbox.appendChild(clone);
 
-            // 2. Реальный img - это НОВАЯ картинка, она лежит СНИЗУ
             const nextImgInfo = allImages[index];
             const nextSrc = nextImgInfo.getAttribute('data-full') || nextImgInfo.src;
             
             lightboxImg.src = nextSrc; 
-            lightboxImg.classList.add('anim-base-bottom'); // Класс "Я снизу"
-            
-            // Сбрасываем зум у новой (нижней) картинки
+            lightboxImg.classList.add('anim-base-bottom');
             resetZoom();
 
-            // 3. Запускаем анимацию
             requestAnimationFrame(() => {
-                if (direction === 'next') {
-                    clone.classList.add('swipe-left'); // Старая улетает влево
-                } else {
-                    clone.classList.add('swipe-right'); // Старая улетает вправо
-                }
-                lightboxImg.classList.add('scale-up'); // Новая чуть всплывает
+                if (direction === 'next') clone.classList.add('swipe-left');
+                else clone.classList.add('swipe-right');
+                lightboxImg.classList.add('scale-up');
             });
 
-            // 4. Уборка после анимации
             setTimeout(() => {
                 clone.remove();
                 lightboxImg.classList.remove('anim-base-bottom', 'scale-up');
             }, 500);
 
         } else {
-            // Обычное открытие (без анимации сдвига)
             resetZoom();
             const currentImg = allImages[index];
             const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
@@ -303,22 +294,18 @@
         }
 
         currentIndex = index;
-
-        // Предзагрузка
         let nextIndex = (index + 1) % allImages.length;
         let prevIndex = (index - 1 + allImages.length) % allImages.length;
         preloadImage(allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src);
         preloadImage(allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src);
     }
 
-    // ЗУМ (Двойной клик)
+    // ЗУМ И ДРАГ
     lightboxImg.addEventListener('dblclick', (e) => {
         e.preventDefault();
-        // При зуме анимации свайпа не должны мешать, поэтому работаем только с чистым img
         if (zoomLevel === 1) zoomLevel = 2;
         else if (zoomLevel === 2) zoomLevel = 3;
         else zoomLevel = 1;
-
         if (zoomLevel === 1) resetZoom();
         else {
             lightboxImg.style.cursor = 'grab';
@@ -327,7 +314,6 @@
         }
     });
 
-    // ДРАГ (Перетаскивание при зуме)
     function startDrag(clientX, clientY) {
         if (zoomLevel === 1) return;
         isDragging = true;
@@ -347,11 +333,9 @@
         currentTranslateY = translateY;
         lightboxImg.classList.remove('grabbing');
     }
-
     lightboxImg.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
     window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
     window.addEventListener('mouseup', endDrag);
-    
     lightboxImg.addEventListener('touchstart', (e) => {
         if (zoomLevel > 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
     }, {passive: false});
@@ -363,19 +347,16 @@
     }, {passive: false});
     lightboxImg.addEventListener('touchend', endDrag);
 
-
     // НАВИГАЦИЯ
     allImages.forEach((img, index) => {
         img.addEventListener('click', () => { showImage(index, 'none'); lightbox.classList.add('active'); });
     });
-
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1, 'prev'); });
     nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1, 'next'); });
     
     const closeLightbox = () => { lightbox.classList.remove('active'); resetZoom(); };
     closeBtn.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-
     document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('active')) return;
         if (e.key === 'ArrowLeft') showImage(currentIndex - 1, 'prev');
@@ -397,13 +378,30 @@
         }
     }, {passive: true});
 
-    // Плавная прокрутка
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
             if (targetId && targetId !== '#') document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
         });
+    });
+
+    // --- 4. СКРИПТ ПАРАЛЛАКСА (Новый) ---
+    // Двигаем фон с разной скоростью
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const heroBg = document.getElementById('hero-bg');
+        const heroContent = document.getElementById('hero-content');
+        
+        // Если прокрутили недалеко, запускаем эффект
+        if (scrollY < window.innerHeight) {
+            // Фон двигается медленнее (0.5 от скорости скролла)
+            heroBg.style.transform = `translateY(${scrollY * 0.5}px)`;
+            
+            // Текст чуть сдвигается и прозрачность падает
+            heroContent.style.transform = `translateY(${scrollY * 0.2}px)`;
+            heroContent.style.opacity = 1 - (scrollY / 700);
+        }
     });
     </script>
 </body>

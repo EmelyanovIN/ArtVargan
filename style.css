@@ -63,6 +63,16 @@ h1, h2, h3 {
 .btn-dark { background-color: var(--text-main); color: #fff; }
 .btn-dark:hover { background-color: var(--accent); border-color: var(--accent); }
 
+/* Спец. кнопка для Hero (белая рамка) */
+.btn-hero {
+    border-color: #fff;
+    color: #fff;
+}
+.btn-hero:hover {
+    background-color: #fff;
+    color: #000;
+}
+
 /* --- ШАПКА --- */
 .header {
     padding: 15px 0;
@@ -85,14 +95,30 @@ h1, h2, h3 {
 .hamburger.active span:nth-child(2) { opacity: 0; }
 .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
 
-/* --- HERO --- */
+/* --- HERO (С ПАРАЛЛАКСОМ) --- */
 .hero {
-    height: 80vh;
+    height: 90vh; /* Чуть выше */
+    position: relative;
+    overflow: hidden; /* Важно, чтобы картинка не вылезала */
     display: flex; align-items: center; justify-content: center; text-align: center;
-    background: linear-gradient(to bottom, #fafafa, #fff);
 }
-.hero h1 { font-size: 4rem; margin-bottom: 20px; }
-.hero p { font-size: 1.2rem; color: var(--text-light); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+/* Слой для фона */
+.hero-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 120%; /* С запасом по высоте для движения */
+    /* Здесь ставим твою картину на фон */
+    background-image: url('img/hero1.avif'); 
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    filter: brightness(0.4); /* Затемняем, чтобы текст читался */
+    will-change: transform; /* Оптимизация для браузера */
+}
+
+/* Контент Hero теперь белый */
+.hero h1 { font-size: 4rem; margin-bottom: 20px; color: #fff; }
+.hero p { font-size: 1.2rem; color: rgba(255,255,255,0.8); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
 
 /* --- ОБО МНЕ --- */
 .about { padding: 100px 0; }
@@ -132,7 +158,7 @@ h1, h2, h3 {
     justify-content: center; align-items: center;
     z-index: 2000;
     opacity: 0; transition: opacity 0.3s;
-    overflow: hidden; /* Важно для свайпов */
+    overflow: hidden; 
 }
 #lightbox.active { display: flex; opacity: 1; }
 
@@ -145,7 +171,7 @@ h1, h2, h3 {
     transform-origin: center center; 
     cursor: zoom-in;
     touch-action: none;
-    z-index: 10; /* Базовый уровень */
+    z-index: 10;
 }
 .lightbox-img.grab { cursor: grab; }
 .lightbox-img.grabbing { cursor: grabbing; transition: none; }
@@ -193,45 +219,17 @@ h1, h2, h3 {
     .lb-arrow { font-size: 35px; padding: 15px; background: rgba(0,0,0,0.1); }
 }
 
-/* --- АНИМАЦИЯ КОЛОДЫ (CARD STACK) --- */
-
-/* 1. Клон (СТАРАЯ картинка) лежит СВЕРХУ */
+/* --- АНИМАЦИЯ КОЛОДЫ --- */
 .anim-clone-top {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 90%; max-height: 90%;
-    border: 2px solid #fff;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    z-index: 20; /* Выше новой */
-    pointer-events: none;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    max-width: 90%; max-height: 90%; border: 2px solid #fff;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5); z-index: 20; pointer-events: none;
 }
-
-/* 2. Реальная (НОВАЯ картинка) лежит СНИЗУ */
-.anim-base-bottom {
-    z-index: 5 !important; /* Ниже старой */
-    filter: brightness(0.5); /* Чуть темнее */
-    transform: scale(0.9); /* Чуть меньше */
-    transition: none; /* Отключаем плавность зума, будет кастомная анимация */
-}
-
-/* 3. Анимация СТАРОЙ картинки (Уезжает) */
+.anim-base-bottom { z-index: 5 !important; filter: brightness(0.5); transform: scale(0.9); transition: none; }
 .swipe-left { animation: moveLeft 0.5s forwards ease-in-out; }
 .swipe-right { animation: moveRight 0.5s forwards ease-in-out; }
-
-/* 4. Анимация НОВОЙ картинки (Всплывает) */
 .scale-up { animation: scaleUp 0.5s forwards ease-in-out; }
 
-/* Ключевые кадры */
-@keyframes moveLeft {
-    to { transform: translate(-150%, -50%) rotate(-10deg); opacity: 0; }
-}
-
-@keyframes moveRight {
-    to { transform: translate(150%, -50%) rotate(10deg); opacity: 0; }
-}
-
-@keyframes scaleUp {
-    from { transform: scale(0.9); filter: brightness(0.5); }
-    to { transform: scale(1); filter: brightness(1); }
-}
+@keyframes moveLeft { to { transform: translate(-150%, -50%) rotate(-10deg); opacity: 0; } }
+@keyframes moveRight { to { transform: translate(150%, -50%) rotate(10deg); opacity: 0; } }
+@keyframes scaleUp { from { transform: scale(0.9); filter: brightness(0.5); } to { transform: scale(1); filter: brightness(1); } }
