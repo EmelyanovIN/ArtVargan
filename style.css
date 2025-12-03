@@ -224,6 +224,8 @@ h1, h2, h3 {
     user-select: none;
     transition: 0.3s;
     z-index: 2002;
+    user-select: none;          /* Запрет выделения текста */
+    -webkit-user-select: none;  /* Для Safari и iPhone */
 }
 .lb-arrow:hover { color: #fff; background-color: rgba(0,0,0,0.3); }
 .lb-prev { left: 0; }
