@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- Важно для мобильных телефонов -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио Художника</title>
+    
+    <!-- Подключаем современные шрифты (Cormorant Garamond для эстетики + Manrope для текста) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Manrope:wght@300;400&display=swap" rel="stylesheet">
+
+    <!-- Подключаем стили -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 1. ШАПКА (Меню) -->
+    <header class="header">
+        <div class="container header-content">
+            <!-- ✏️ МЕНЯТЬ ТУТ: Твое имя или псевдоним (Логотип) -->
+            <a href="#" class="logo">Alex Art.</a>
+            
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#about">Обо мне</a></li>
+                    <li><a href="#gallery">Галерея</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 2. ГЛАВНЫЙ ЭКРАН (Hero) -->
+    <section class="hero">
+        <div class="container hero-content">
+            <!-- ✏️ МЕНЯТЬ ТУТ: Главный заголовок -->
+            <h1>Искусство видеть <br>невидимое</h1>
+            <!-- ✏️ МЕНЯТЬ ТУТ: Подзаголовок -->
+            <p>Современная живопись и графика, вдохновленная природой.</p>
+            <a href="#gallery" class="btn">Смотреть работы</a>
+        </div>
+    </section>
+
+    <!-- 3. ОБО МНЕ -->
+    <section id="about" class="about">
+        <div class="container about-grid">
+            <div class="about-image">
+                <!-- ✏️ МЕНЯТЬ ТУТ: Твое фото. Позже замени src="..." на "img/my-photo.jpg" -->
+                <img src="img/me.jpg" alt="Портрет художника">
+            </div>
+            <div class="about-text">
+                <h2>Художник & Визионер</h2>
+                <!-- ✏️ МЕНЯТЬ ТУТ: Текст о себе -->
+                <p>Привет! Меня зовут Александр. Я создаю картины, которые наполняют пространство смыслом и тишиной.</p>
+                <p>Мой стиль — это сочетание классической техники масла и современных абстрактных форм. Я верю, что каждая картина должна рассказывать историю, которую зритель додумывает сам.</p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <span>10+</span> лет опыта
+                    </div>
+                    <div class="stat-item">
+                        <span>50+</span> картин
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ГАЛЕРЕЯ (Сетка работ) -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2>Избранные работы</h2>
+                <p>Нажмите на работу, чтобы рассмотреть (в будущем можно добавить лайтбокс)</p>
+            </div>
+
+            <div class="gallery-grid">
+                <!-- РАБОТА 1 -->
+                <div class="art-card">
+                    <!-- ✏️ МЕНЯТЬ ТУТ: Картинка 1. Замени на "img/art1.jpg" -->
+                    <img src="img/art0.jpg" alt="Название картины">
+                    <div class="art-info">
+                        <!-- ✏️ МЕНЯТЬ ТУТ: Название и описание -->
+                        <h3>"Весеннее пробуждение"</h3>
+                        <p>Холст, масло. 60x80 см.</p>
+                    </div>
+                </div>
+
+                <!-- РАБОТА 2 -->
+                <div class="art-card">
+                    <!-- ✏️ МЕНЯТЬ ТУТ: Картинка 2 -->
+                    <img src="img/art1.jpg" alt="Название картины">
+                    <div class="art-info">
+                        <h3>"Тишина гор"</h3>
+                        <p>Акрил. 50x50 см.</p>
+                    </div>
+                </div>
+
+                <!-- РАБОТА 3 -->
+                <div class="art-card">
+                    <!-- ✏️ МЕНЯТЬ ТУТ: Картинка 3 -->
+                    <img src="img/art2.jpg" alt="Название картины">
+                    <div class="art-info">
+                        <h3>"Абстракция №5"</h3>
+                        <p>Смешанная техника.</p>
+                    </div>
+                </div>
+
+                <!-- РАБОТА 4 -->
+                <div class="art-card">
+                    <!-- ✏️ МЕНЯТЬ ТУТ: Картинка 4 -->
+                    <img src="img/art3.jpg" alt="Название картины">
+                    <div class="art-info">
+                        <h3>"Закат в городе"</h3>
+                        <p>Холст, масло.</p>
+                    </div>
+                </div>
+                 <!-- Можно копировать блоки "art-card", чтобы добавить больше работ -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. КОНТАКТЫ (CTA) -->
+    <section id="contacts" class="contacts">
+        <div class="container contact-content">
+            <h2>Понравились работы?</h2>
+            <p>Я открыт для заказов и сотрудничества. Напишите мне, и мы обсудим детали.</p>
+            
+            <div class="links">
+                <!-- ✏️ МЕНЯТЬ ТУТ: Твоя почта и соцсети -->
+                <a href="mailto:art@example.com" class="btn btn-dark">Написать на почту</a>
+                <a href="https://instagram.com" target="_blank" class="social-link">Instagram</a>
+                <a href="https://t.me" target="_blank" class="social-link">Telegram</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <!-- ✏️ МЕНЯТЬ ТУТ: Год и Имя -->
+        <p>© 2025 Alex Art. Все права защищены.</p>
+    </footer>
+
+    <!-- Простой скрипт для плавной прокрутки -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

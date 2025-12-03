@@ -1,0 +1,294 @@
+/* --- НАСТРОЙКИ ПЕРЕМЕННЫХ (ЦВЕТА И ШРИФТЫ) --- */
+:root {
+    --bg-color: #ffffff;      /* Основной фон (белый) */
+    --text-main: #1a1a1a;     /* Основной текст (почти черный) */
+    --text-light: #666666;    /* Светлый текст (серый) */
+    --accent: #d4a373;        /* Акцентный цвет (песочно-золотой, для эстетики) */
+    
+    --font-head: 'Cormorant Garamond', serif; /* Красивый шрифт заголовков */
+    --font-body: 'Manrope', sans-serif;       /* Читаемый шрифт текста */
+}
+
+/* --- БАЗА --- */
+html {
+    scroll-behavior: smooth; /* Плавная прокрутка */
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--text-main);
+    background-color: var(--bg-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ТИПОГРАФИКА */
+h1, h2, h3 {
+    font-family: var(--font-head);
+    font-weight: 600;
+    margin-top: 0;
+    line-height: 1.1;
+}
+
+/* КНОПКИ */
+.btn {
+    display: inline-block;
+    padding: 15px 35px;
+    background-color: transparent;
+    border: 1px solid var(--text-main);
+    color: var(--text-main);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--text-main);
+    color: #fff;
+}
+
+.btn-dark {
+    background-color: var(--text-main);
+    color: #fff;
+}
+
+.btn-dark:hover {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* --- 1. ШАПКА --- */
+.header {
+    padding: 20px 0;
+    position: sticky; /* Липкая шапка */
+    top: 0;
+    background: rgba(255, 255, 255, 0.95); /* Полупрозрачный фон */
+    z-index: 1000;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-family: var(--font-head);
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--text-main);
+    text-decoration: none;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+
+.nav-list a:hover {
+    color: var(--accent);
+}
+
+/* --- 2. HERO (ГЛАВНЫЙ ЭКРАН) --- */
+.hero {
+    height: 80vh; /* Высота 80% от экрана */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #fafafa; /* Чуть сероватый фон для контраста */
+}
+
+.hero h1 {
+    font-size: 5rem; /* Огромный заголовок */
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- 3. ОБО МНЕ --- */
+.about {
+    padding: 100px 0;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Две колонки */
+    gap: 60px;
+    align-items: center;
+}
+
+.about-image img {
+    border-radius: 4px;
+    box-shadow: 20px 20px 0 var(--accent); /* Стильная тень */
+}
+
+.about-text h2 {
+    font-size: 3rem;
+    margin-bottom: 30px;
+}
+
+.stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.stat-item span {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 2.5rem;
+    color: var(--accent);
+    line-height: 1;
+}
+
+/* --- 4. ГАЛЕРЕЯ --- */
+.gallery {
+    padding: 80px 0;
+    background-color: #fff;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-size: 3rem;
+}
+
+/* Сетка для картин (Masonry-style имитация) */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Автоматические колонки */
+    gap: 30px;
+}
+
+.art-card {
+    group: relative;
+}
+
+.art-card img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover; /* Чтобы картинки не сплющивались */
+    transition: transform 0.5s ease;
+    cursor: pointer;
+}
+
+.art-card:hover img {
+    transform: scale(1.02); /* Легкое увеличение при наведении */
+}
+
+.art-info {
+    padding-top: 15px;
+}
+
+.art-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+}
+
+.art-info p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* --- 5. КОНТАКТЫ И ПОДВАЛ --- */
+.contacts {
+    padding: 100px 0;
+    text-align: center;
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.contacts h2 {
+    color: #fff;
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.contacts p {
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    color: #fff;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+
+.social-link:hover {
+    color: var(--accent);
+}
+
+.footer {
+    background-color: #111;
+    color: #555;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.8rem;
+}
+
+/* --- АДАПТИВНОСТЬ (МОБИЛЬНЫЕ) --- */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 3rem; }
+    
+    .about-grid {
+        grid-template-columns: 1fr; /* Одна колонка на телефоне */
+    }
+    
+    .nav-list {
+        display: none; /* Упрощаем меню для мобильных (скрываем пока) */
+    }
+    
+    /* Добавляем простое выравнивание лого по центру на моб */
+    .header-content {
+        justify-content: center;
+    }
+}
