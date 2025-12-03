@@ -181,120 +181,128 @@
 
     <!-- СКРИПТЫ -->
     <script>
-        // 1. Мобильное меню
-        const hamburger = document.querySelector('.hamburger');
-        const nav = document.querySelector('.nav');
+    // 1. Мобильное меню
+    const hamburger = document.querySelector('.hamburger');
+    const nav = document.querySelector('.nav');
 
-        if(hamburger) {
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('active');
-                nav.classList.toggle('active');
-            });
-        }
-
-        document.querySelectorAll('.nav-list a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                nav.classList.remove('active');
-            });
+    if(hamburger) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
         });
+    }
 
-        // 2. Лайтбокс PRO (Свайпы + Стрелки + Клавиатура)
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.querySelector('.lightbox-img');
-        const closeBtn = document.querySelector('.close-btn');
-        const prevBtn = document.querySelector('.lb-prev');
-        const nextBtn = document.querySelector('.lb-next');
+    document.querySelectorAll('.nav-list a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            nav.classList.remove('active');
+        });
+    });
+
+    // 2. Лайтбокс с ПРЕДЗАГРУЗКОЙ
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.querySelector('.lightbox-img');
+    const closeBtn = document.querySelector('.close-btn');
+    const prevBtn = document.querySelector('.lb-prev');
+    const nextBtn = document.querySelector('.lb-next');
+    
+    const allImages = Array.from(document.querySelectorAll('.art-card img'));
+    let currentIndex = 0;
+
+    // Вспомогательная функция предзагрузки
+    function preloadImage(url) {
+        if (!url) return;
+        const img = new Image();
+        img.src = url;
+    }
+
+    function showImage(index) {
+        // Зацикливание
+        if (index >= allImages.length) index = 0;
+        if (index < 0) index = allImages.length - 1;
         
-        // Собираем все картинки галереи в список
-        const allImages = Array.from(document.querySelectorAll('.art-card img'));
-        let currentIndex = 0;
+        currentIndex = index;
+        
+        // Получаем ссылку на текущую
+        const currentImg = allImages[index];
+        const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
+        
+        // Меняем картинку
+        lightboxImg.src = fullQualitySrc;
 
-        // Функция открытия картинки по индексу
-        function showImage(index) {
-            // Если вышли за границы - идем по кругу
-            if (index >= allImages.length) index = 0;
-            if (index < 0) index = allImages.length - 1;
-            
-            currentIndex = index;
-            const img = allImages[index];
-            
-            // Берем качество HD (data-full), если есть, иначе обычное
-            const fullQualitySrc = img.getAttribute('data-full') || img.src;
-            
-            // Небольшой эффект исчезновения при смене
-            lightboxImg.style.opacity = 0;
-            
-            setTimeout(() => {
-                lightboxImg.src = fullQualitySrc;
-                lightboxImg.style.opacity = 1;
-            }, 100);
-        }
+        // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ: ПРЕДЗАГРУЗКА ---
+        // Как только открыли текущую, сразу качаем следующую и предыдущую
+        
+        // Следующая
+        let nextIndex = index + 1;
+        if (nextIndex >= allImages.length) nextIndex = 0;
+        const nextSrc = allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src;
+        preloadImage(nextSrc);
 
-        // Клик по миниатюре
-        allImages.forEach((img, index) => {
-            img.addEventListener('click', () => {
-                showImage(index);
-                lightbox.classList.add('active');
-            });
+        // Предыдущая (для свайпа назад)
+        let prevIndex = index - 1;
+        if (prevIndex < 0) prevIndex = allImages.length - 1;
+        const prevSrc = allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src;
+        preloadImage(prevSrc);
+    }
+
+    // События
+    allImages.forEach((img, index) => {
+        img.addEventListener('click', () => {
+            showImage(index);
+            lightbox.classList.add('active');
         });
+    });
 
-        // Стрелки на экране
-        prevBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showImage(currentIndex - 1);
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex + 1);
+    });
+
+    const closeLightbox = () => lightbox.classList.remove('active');
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+        if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Свайпы
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    lightbox.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+
+    lightbox.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) showImage(currentIndex + 1);
+        if (touchEndX - touchStartX > 50) showImage(currentIndex - 1);
+    }, {passive: true});
+
+    // 3. Плавная прокрутка
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId !== '#') {
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
-
-        nextBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showImage(currentIndex + 1);
-        });
-
-        // Закрытие
-        const closeLightbox = () => lightbox.classList.remove('active');
-        closeBtn.addEventListener('click', closeLightbox);
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) closeLightbox();
-        });
-
-        // Управление клавиатурой (←, →, Esc)
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-            if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
-            if (e.key === 'ArrowRight') showImage(currentIndex + 1);
-            if (e.key === 'Escape') closeLightbox();
-        });
-
-        // СВАЙПЫ (Touch events)
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        lightbox.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-
-        lightbox.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, {passive: true});
-
-        function handleSwipe() {
-            if (touchStartX - touchEndX > 50) showImage(currentIndex + 1); // Свайп влево (следующая)
-            if (touchEndX - touchStartX > 50) showImage(currentIndex - 1); // Свайп вправо (предыдущая)
-        }
-
-        // 3. Плавная прокрутка
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId !== '#') {
-                    document.querySelector(targetId).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
