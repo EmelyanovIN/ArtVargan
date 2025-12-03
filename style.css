@@ -272,3 +272,60 @@ h1, h2, h3 {
     .nav-list { flex-direction: column; align-items: center; gap: 40px; font-size: 1.2rem; }
     .lb-arrow { font-size: 35px; padding: 15px; background: rgba(0,0,0,0.1); }
 }
+/* --- АНИМАЦИИ СЛАЙДЕРА (СВАЙПЫ) --- */
+
+/* Контейнер лайтбокса должен обрезать вылетающие картинки */
+#lightbox {
+    overflow: hidden; 
+}
+
+/* Клон (старая картинка), который будет улетать */
+.anim-clone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Центровка */
+    max-width: 90%;
+    max-height: 90%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    z-index: 1999; /* Чуть ниже главной */
+    pointer-events: none; /* Чтобы нельзя было кликнуть */
+}
+
+/* 1. Движение ВПЕРЕД (Свайп влево) */
+/* Старая уезжает влево */
+.slide-out-left {
+    animation: slideOutLeft 0.4s forwards ease-in-out;
+}
+/* Новая приезжает справа */
+.slide-in-right {
+    animation: slideInRight 0.4s forwards ease-in-out;
+}
+
+/* 2. Движение НАЗАД (Свайп вправо) */
+/* Старая уезжает вправо */
+.slide-out-right {
+    animation: slideOutRight 0.4s forwards ease-in-out;
+}
+/* Новая приезжает слева */
+.slide-in-left {
+    animation: slideInLeft 0.4s forwards ease-in-out;
+}
+
+/* --- САМИ КЛЮЧЕВЫЕ КАДРЫ --- */
+@keyframes slideOutLeft {
+    to { transform: translate(-150%, -50%); opacity: 0; }
+}
+@keyframes slideInRight {
+    from { transform: translate(50%, -50%); opacity: 0; }
+    to { transform: translate(-50%, -50%); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    to { transform: translate(50%, -50%); opacity: 0; }
+}
+@keyframes slideInLeft {
+    from { transform: translate(-150%, -50%); opacity: 0; }
+    to { transform: translate(-50%, -50%); opacity: 1; }
+}

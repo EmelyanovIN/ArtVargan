@@ -195,191 +195,215 @@
 
     <!-- СКРИПТЫ -->
     <script>
-        // 1. АНИМАЦИЯ ПРИ СКРОЛЛЕ (Scroll Reveal)
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 100; // Через сколько пикселей показывать
-
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
-                }
-            }
+    // 1. АНИМАЦИЯ ПРИ СКРОЛЛЕ
+    function reveal() {
+        var reveals = document.querySelectorAll(".reveal");
+        for (var i = 0; i < reveals.length; i++) {
+            var windowHeight = window.innerHeight;
+            var elementTop = reveals[i].getBoundingClientRect().top;
+            if (elementTop < windowHeight - 100) reveals[i].classList.add("active");
         }
-        window.addEventListener("scroll", reveal);
-        // Запускаем один раз при загрузке, чтобы показать то, что уже на экране
-        reveal();
+    }
+    window.addEventListener("scroll", reveal);
+    reveal();
 
-
-        // 2. Мобильное меню
-        const hamburger = document.querySelector('.hamburger');
-        const nav = document.querySelector('.nav');
-
-        if(hamburger) {
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('active');
-                nav.classList.toggle('active');
-            });
-        }
-        document.querySelectorAll('.nav-list a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                nav.classList.remove('active');
-            });
+    // 2. МОБИЛЬНОЕ МЕНЮ
+    const hamburger = document.querySelector('.hamburger');
+    const nav = document.querySelector('.nav');
+    if(hamburger) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
         });
-
-        // 3. Лайтбокс PRO (Зум + Свайпы + Предзагрузка)
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.querySelector('.lightbox-img');
-        const closeBtn = document.querySelector('.close-btn');
-        const prevBtn = document.querySelector('.lb-prev');
-        const nextBtn = document.querySelector('.lb-next');
-        const allImages = Array.from(document.querySelectorAll('.art-card img'));
-        let currentIndex = 0;
-        let zoomLevel = 1;      
-        let isDragging = false;
-        let startX = 0, startY = 0;
-        let translateX = 0, translateY = 0;
-        let currentTranslateX = 0, currentTranslateY = 0;
-
-        function preloadImage(url) {
-            if (!url) return;
-            const img = new Image();
-            img.src = url;
-        }
-
-        function resetZoom() {
-            zoomLevel = 1;
-            translateX = 0; translateY = 0;
-            currentTranslateX = 0; currentTranslateY = 0;
-            updateTransform();
-            lightboxImg.classList.remove('grab', 'grabbing');
-            lightboxImg.style.cursor = 'zoom-in';
-        }
-
-        function updateTransform() {
-            lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
-        }
-
-        function showImage(index) {
-            if (index >= allImages.length) index = 0;
-            if (index < 0) index = allImages.length - 1;
-            
-            resetZoom(); // Сброс зума
-            currentIndex = index;
-            const currentImg = allImages[index];
-            const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
-            
-            lightboxImg.style.opacity = 0.5;
-            lightboxImg.src = fullQualitySrc;
-            
-            lightboxImg.onload = () => { lightboxImg.style.opacity = 1; };
-            if (lightboxImg.complete) { lightboxImg.style.opacity = 1; }
-
-            // Предзагрузка
-            let nextIndex = (index + 1) % allImages.length;
-            let prevIndex = (index - 1 + allImages.length) % allImages.length;
-            const nextSrc = allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src;
-            const prevSrc = allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src;
-            preloadImage(nextSrc);
-            preloadImage(prevSrc);
-        }
-
-        // ЗУМ
-        lightboxImg.addEventListener('dblclick', (e) => {
-            e.preventDefault();
-            if (zoomLevel === 1) zoomLevel = 2;
-            else if (zoomLevel === 2) zoomLevel = 3;
-            else zoomLevel = 1;
-
-            if (zoomLevel === 1) resetZoom();
-            else {
-                lightboxImg.style.cursor = 'grab';
-                lightboxImg.classList.add('grab');
-                updateTransform();
-            }
+    }
+    document.querySelectorAll('.nav-list a').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            nav.classList.remove('active');
         });
+    });
 
-        // ДРАГ (Перетаскивание)
-        function startDrag(clientX, clientY) {
-            if (zoomLevel === 1) return;
-            isDragging = true;
-            startX = clientX - currentTranslateX;
-            startY = clientY - currentTranslateY;
-            lightboxImg.classList.add('grabbing');
-        }
-        function moveDrag(clientX, clientY) {
-            if (!isDragging) return;
-            translateX = clientX - startX;
-            translateY = clientY - startY;
-            updateTransform();
-        }
-        function endDrag() {
-            isDragging = false;
-            currentTranslateX = translateX;
-            currentTranslateY = translateY;
-            lightboxImg.classList.remove('grabbing');
-        }
+    // 3. ЛАЙТБОКС (СЛАЙДЕР + ЗУМ)
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.querySelector('.lightbox-img');
+    const closeBtn = document.querySelector('.close-btn');
+    const prevBtn = document.querySelector('.lb-prev');
+    const nextBtn = document.querySelector('.lb-next');
+    const allImages = Array.from(document.querySelectorAll('.art-card img'));
+    
+    let currentIndex = 0;
+    let zoomLevel = 1;      
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+    let currentTranslateX = 0, currentTranslateY = 0;
 
-        lightboxImg.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
-        window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
-        window.addEventListener('mouseup', endDrag);
+    function preloadImage(url) {
+        if (!url) return;
+        const img = new Image();
+        img.src = url;
+    }
 
-        lightboxImg.addEventListener('touchstart', (e) => {
-            if (zoomLevel > 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
-        }, {passive: false});
+    function resetZoom() {
+        zoomLevel = 1;
+        translateX = 0; translateY = 0;
+        currentTranslateX = 0; currentTranslateY = 0;
+        lightboxImg.style.transform = `translate(0px, 0px) scale(1)`;
+        lightboxImg.classList.remove('grab', 'grabbing');
+        lightboxImg.style.cursor = 'zoom-in';
+    }
 
-        lightboxImg.addEventListener('touchmove', (e) => {
-            if (zoomLevel > 1 && isDragging) {
-                e.preventDefault();
-                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+    function updateTransform() {
+        lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+    }
+
+    // --- ГЛАВНАЯ ФУНКЦИЯ СМЕНЫ СЛАЙДА ---
+    function showImage(index, direction = 'none') {
+        if (index >= allImages.length) index = 0;
+        if (index < 0) index = allImages.length - 1;
+
+        // 1. Если это анимация (не первое открытие), делаем КЛОНА
+        if (direction !== 'none' && lightbox.classList.contains('active')) {
+            // Создаем копию текущей картинки
+            const clone = lightboxImg.cloneNode();
+            clone.classList.add('anim-clone');
+            // Убираем у клона стили трансформации, чтобы он встал ровно по центру
+            clone.style.transform = 'translate(-50%, -50%) scale(1)';
+            lightbox.appendChild(clone);
+
+            // Навешиваем классы анимации выезда
+            if (direction === 'next') {
+                clone.classList.add('slide-out-left'); // Старая уходит влево
+                lightboxImg.classList.add('slide-in-right'); // Новая приходит справа
+            } else {
+                clone.classList.add('slide-out-right'); // Старая уходит вправо
+                lightboxImg.classList.add('slide-in-left'); // Новая приходит слева
             }
-        }, {passive: false});
-        lightboxImg.addEventListener('touchend', endDrag);
 
-        // Общие события
-        allImages.forEach((img, index) => {
-            img.addEventListener('click', () => { showImage(index); lightbox.classList.add('active'); });
-        });
-        prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1); });
-        nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1); });
+            // Удаляем клона после завершения анимации (400мс)
+            setTimeout(() => {
+                clone.remove();
+                lightboxImg.classList.remove('slide-in-right', 'slide-in-left');
+            }, 400);
+        }
+
+        // 2. Сброс зума перед сменой
+        resetZoom();
+
+        // 3. Меняем источник
+        currentIndex = index;
+        const currentImg = allImages[index];
+        const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
         
-        const closeLightbox = () => { lightbox.classList.remove('active'); resetZoom(); };
-        closeBtn.addEventListener('click', closeLightbox);
-        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+        // Если это первое открытие (без анимации), просто ставим прозрачность
+        if (direction === 'none') {
+            lightboxImg.style.opacity = 0;
+            setTimeout(() => lightboxImg.style.opacity = 1, 100);
+        }
+        
+        lightboxImg.src = fullQualitySrc;
 
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-            if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
-            if (e.key === 'ArrowRight') showImage(currentIndex + 1);
-            if (e.key === 'Escape') closeLightbox();
+        // 4. Предзагрузка соседей
+        let nextIndex = (index + 1) % allImages.length;
+        let prevIndex = (index - 1 + allImages.length) % allImages.length;
+        preloadImage(allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src);
+        preloadImage(allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src);
+    }
+
+    // ЗУМ
+    lightboxImg.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        if (zoomLevel === 1) zoomLevel = 2;
+        else if (zoomLevel === 2) zoomLevel = 3;
+        else zoomLevel = 1;
+
+        if (zoomLevel === 1) resetZoom();
+        else {
+            lightboxImg.style.cursor = 'grab';
+            lightboxImg.classList.add('grab');
+            updateTransform();
+        }
+    });
+
+    // ДРАГ (Перетаскивание)
+    function startDrag(clientX, clientY) {
+        if (zoomLevel === 1) return;
+        isDragging = true;
+        startX = clientX - currentTranslateX;
+        startY = clientY - currentTranslateY;
+        lightboxImg.classList.add('grabbing');
+    }
+    function moveDrag(clientX, clientY) {
+        if (!isDragging) return;
+        translateX = clientX - startX;
+        translateY = clientY - startY;
+        updateTransform();
+    }
+    function endDrag() {
+        isDragging = false;
+        currentTranslateX = translateX;
+        currentTranslateY = translateY;
+        lightboxImg.classList.remove('grabbing');
+    }
+
+    lightboxImg.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
+    window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+    window.addEventListener('mouseup', endDrag);
+    
+    lightboxImg.addEventListener('touchstart', (e) => {
+        if (zoomLevel > 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive: false});
+    lightboxImg.addEventListener('touchmove', (e) => {
+        if (zoomLevel > 1 && isDragging) {
+            e.preventDefault();
+            moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, {passive: false});
+    lightboxImg.addEventListener('touchend', endDrag);
+
+
+    // СОБЫТИЯ НАВИГАЦИИ (Теперь передаем 'next' или 'prev')
+    allImages.forEach((img, index) => {
+        img.addEventListener('click', () => { showImage(index, 'none'); lightbox.classList.add('active'); });
+    });
+
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1, 'prev'); });
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1, 'next'); });
+    
+    const closeLightbox = () => { lightbox.classList.remove('active'); resetZoom(); };
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft') showImage(currentIndex - 1, 'prev');
+        if (e.key === 'ArrowRight') showImage(currentIndex + 1, 'next');
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+    // СВАЙПЫ
+    let swipeStartX = 0;
+    let swipeEndX = 0;
+    lightbox.addEventListener('touchstart', (e) => {
+        if (zoomLevel === 1 || e.target === lightbox) swipeStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+    lightbox.addEventListener('touchend', (e) => {
+        if (zoomLevel === 1 || e.target === lightbox) {
+            swipeEndX = e.changedTouches[0].screenX;
+            // Передаем направление в функцию showImage
+            if (swipeStartX - swipeEndX > 50) showImage(currentIndex + 1, 'next');
+            if (swipeEndX - swipeStartX > 50) showImage(currentIndex - 1, 'prev');
+        }
+    }, {passive: true});
+
+    // Плавная прокрутка
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId !== '#') document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
         });
-
-        // Свайпы (если не зум)
-        let swipeStartX = 0;
-        let swipeEndX = 0;
-        lightbox.addEventListener('touchstart', (e) => {
-            if (zoomLevel === 1 || e.target === lightbox) swipeStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-        lightbox.addEventListener('touchend', (e) => {
-            if (zoomLevel === 1 || e.target === lightbox) {
-                swipeEndX = e.changedTouches[0].screenX;
-                if (swipeStartX - swipeEndX > 50) showImage(currentIndex + 1);
-                if (swipeEndX - swipeStartX > 50) showImage(currentIndex - 1);
-            }
-        }, {passive: true});
-
-        // Плавная прокрутка
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId && targetId !== '#') document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
-            });
-        });
+    });
     </script>
 </body>
 </html>
