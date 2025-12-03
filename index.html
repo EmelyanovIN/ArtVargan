@@ -5,16 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Art Vargan | Художник</title>
     
-    <!-- --- 1. OPEN GRAPH (КРАСИВЫЕ ССЫЛКИ В TELEGRAM) --- -->
+    <!-- OPEN GRAPH -->
     <meta property="og:title" content="Art Vargan | Искусство момента">
     <meta property="og:description" content="Современная живопись и графика. Авторские картины, наполняющие пространство смыслом.">
     <meta property="og:type" content="website">
-    
-    <!-- ВАЖНО: Замени ссылку ниже на адрес твоего сайта (например, https://emelyanovin.github.io/ArtVargan/) -->
     <meta property="og:url" content="https://emelyanovin.github.io/ArtVargan/">
-    
-    <!-- Картинка, которая будет в превью (берем первую работу) -->
-    <!-- Телеграм любит полные ссылки, поэтому лучше дописать домен перед img/art1.jpg, но пока оставим так -->
     <meta property="og:image" content="https://emelyanovin.github.io/ArtVargan/img/me.jpg">
 
     <!-- Иконка -->
@@ -54,7 +49,6 @@
     <!-- HERO -->
     <section class="hero">
         <div class="container hero-content">
-            <!-- Класс reveal добавляет анимацию появления -->
             <h1 class="reveal">Искусство момента</h1>
             <p class="reveal delay-100">Живопись, графика и визуальные эксперименты.</p>
             <div class="reveal delay-200">
@@ -223,7 +217,7 @@
         });
     });
 
-    // 3. ЛАЙТБОКС (СЛАЙДЕР + ЗУМ)
+    // 3. ЛАЙТБОКС (STACK EFFECT + ZOOM)
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.querySelector('.lightbox-img');
     const closeBtn = document.querySelector('.close-btn');
@@ -257,62 +251,70 @@
         lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
     }
 
-    // --- ГЛАВНАЯ ФУНКЦИЯ СМЕНЫ СЛАЙДА ---
+    // --- ГЛАВНАЯ ФУНКЦИЯ СМЕНЫ СЛАЙДА (ЭФФЕКТ КОЛОДЫ) ---
     function showImage(index, direction = 'none') {
         if (index >= allImages.length) index = 0;
         if (index < 0) index = allImages.length - 1;
 
-        // 1. Если это анимация (не первое открытие), делаем КЛОНА
+        // Если это анимация (уже открыто окно), делаем эффект колоды
         if (direction !== 'none' && lightbox.classList.contains('active')) {
-            // Создаем копию текущей картинки
+            
+            // 1. Клон - это СТАРАЯ картинка, которая будет лежать СВЕРХУ и уезжать
             const clone = lightboxImg.cloneNode();
-            clone.classList.add('anim-clone');
-            // Убираем у клона стили трансформации, чтобы он встал ровно по центру
-            clone.style.transform = 'translate(-50%, -50%) scale(1)';
+            clone.src = lightboxImg.src; // Фиксируем старую картинку
+            clone.style.transform = `translate(0, 0) scale(1)`; // Сброс трансформаций
+            clone.classList.add('anim-clone-top'); // Класс "Я сверху"
             lightbox.appendChild(clone);
 
-            // Навешиваем классы анимации выезда
-            if (direction === 'next') {
-                clone.classList.add('slide-out-left'); // Старая уходит влево
-                lightboxImg.classList.add('slide-in-right'); // Новая приходит справа
-            } else {
-                clone.classList.add('slide-out-right'); // Старая уходит вправо
-                lightboxImg.classList.add('slide-in-left'); // Новая приходит слева
-            }
+            // 2. Реальный img - это НОВАЯ картинка, она лежит СНИЗУ
+            const nextImgInfo = allImages[index];
+            const nextSrc = nextImgInfo.getAttribute('data-full') || nextImgInfo.src;
+            
+            lightboxImg.src = nextSrc; 
+            lightboxImg.classList.add('anim-base-bottom'); // Класс "Я снизу"
+            
+            // Сбрасываем зум у новой (нижней) картинки
+            resetZoom();
 
-            // Удаляем клона после завершения анимации (400мс)
+            // 3. Запускаем анимацию
+            requestAnimationFrame(() => {
+                if (direction === 'next') {
+                    clone.classList.add('swipe-left'); // Старая улетает влево
+                } else {
+                    clone.classList.add('swipe-right'); // Старая улетает вправо
+                }
+                lightboxImg.classList.add('scale-up'); // Новая чуть всплывает
+            });
+
+            // 4. Уборка после анимации
             setTimeout(() => {
                 clone.remove();
-                lightboxImg.classList.remove('slide-in-right', 'slide-in-left');
-            }, 400);
-        }
+                lightboxImg.classList.remove('anim-base-bottom', 'scale-up');
+            }, 500);
 
-        // 2. Сброс зума перед сменой
-        resetZoom();
-
-        // 3. Меняем источник
-        currentIndex = index;
-        const currentImg = allImages[index];
-        const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
-        
-        // Если это первое открытие (без анимации), просто ставим прозрачность
-        if (direction === 'none') {
+        } else {
+            // Обычное открытие (без анимации сдвига)
+            resetZoom();
+            const currentImg = allImages[index];
+            const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
             lightboxImg.style.opacity = 0;
+            lightboxImg.src = fullQualitySrc;
             setTimeout(() => lightboxImg.style.opacity = 1, 100);
         }
-        
-        lightboxImg.src = fullQualitySrc;
 
-        // 4. Предзагрузка соседей
+        currentIndex = index;
+
+        // Предзагрузка
         let nextIndex = (index + 1) % allImages.length;
         let prevIndex = (index - 1 + allImages.length) % allImages.length;
         preloadImage(allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src);
         preloadImage(allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src);
     }
 
-    // ЗУМ
+    // ЗУМ (Двойной клик)
     lightboxImg.addEventListener('dblclick', (e) => {
         e.preventDefault();
+        // При зуме анимации свайпа не должны мешать, поэтому работаем только с чистым img
         if (zoomLevel === 1) zoomLevel = 2;
         else if (zoomLevel === 2) zoomLevel = 3;
         else zoomLevel = 1;
@@ -325,7 +327,7 @@
         }
     });
 
-    // ДРАГ (Перетаскивание)
+    // ДРАГ (Перетаскивание при зуме)
     function startDrag(clientX, clientY) {
         if (zoomLevel === 1) return;
         isDragging = true;
@@ -362,7 +364,7 @@
     lightboxImg.addEventListener('touchend', endDrag);
 
 
-    // СОБЫТИЯ НАВИГАЦИИ (Теперь передаем 'next' или 'prev')
+    // НАВИГАЦИЯ
     allImages.forEach((img, index) => {
         img.addEventListener('click', () => { showImage(index, 'none'); lightbox.classList.add('active'); });
     });
@@ -390,7 +392,6 @@
     lightbox.addEventListener('touchend', (e) => {
         if (zoomLevel === 1 || e.target === lightbox) {
             swipeEndX = e.changedTouches[0].screenX;
-            // Передаем направление в функцию showImage
             if (swipeStartX - swipeEndX > 50) showImage(currentIndex + 1, 'next');
             if (swipeEndX - swipeStartX > 50) showImage(currentIndex - 1, 'prev');
         }
