@@ -3,9 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Art Vargan | Портфолио</title>
+    <title>Art Vargan | Художник</title>
     
-    <!-- Иконка сайта -->
+    <!-- --- 1. OPEN GRAPH (КРАСИВЫЕ ССЫЛКИ В TELEGRAM) --- -->
+    <meta property="og:title" content="Art Vargan | Искусство момента">
+    <meta property="og:description" content="Современная живопись и графика. Авторские картины, наполняющие пространство смыслом.">
+    <meta property="og:type" content="website">
+    
+    <!-- ВАЖНО: Замени ссылку ниже на адрес твоего сайта (например, https://emelyanovin.github.io/ArtVargan/) -->
+    <meta property="og:url" content="https://emelyanovin.github.io/ArtVargan/">
+    
+    <!-- Картинка, которая будет в превью (берем первую работу) -->
+    <!-- Телеграм любит полные ссылки, поэтому лучше дописать домен перед img/art1.jpg, но пока оставим так -->
+    <meta property="og:image" content="img/art1.jpg">
+
+    <!-- Иконка -->
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 
     <!-- Шрифты -->
@@ -42,20 +54,22 @@
     <!-- HERO -->
     <section class="hero">
         <div class="container hero-content">
-            <h1>Искусство момента</h1>
-            <p>Живопись, графика и визуальные эксперименты.</p>
-            <a href="#gallery" class="btn">Смотреть работы</a>
+            <!-- Класс reveal добавляет анимацию появления -->
+            <h1 class="reveal">Искусство момента</h1>
+            <p class="reveal delay-100">Живопись, графика и визуальные эксперименты.</p>
+            <div class="reveal delay-200">
+                <a href="#gallery" class="btn">Смотреть работы</a>
+            </div>
         </div>
     </section>
 
     <!-- ОБО МНЕ -->
     <section id="about" class="about">
         <div class="container about-grid">
-            <div class="about-image">
-                <!-- Твое фото -->
+            <div class="about-image reveal">
                 <img src="img/me.jpg" alt="Портрет художника" onerror="this.src='https://via.placeholder.com/600x800?text=Нет+me.jpg'">
             </div>
-            <div class="about-text">
+            <div class="about-text reveal">
                 <h2>Приветствую</h2>
                 <p>Меня зовут Александр. В своих работах я исследую границу между реальностью и сновидением. Каждая картина — это попытка поймать эмоцию и запечатлеть её на холсте.</p>
                 <p>Я использую смешанные техники, чтобы передать глубину и текстуру мира вокруг нас.</p>
@@ -75,15 +89,15 @@
     <!-- ГАЛЕРЕЯ -->
     <section id="gallery" class="gallery">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <h2>Избранные работы</h2>
-                <p>Кликните на работу, чтобы открыть просмотр</p>
+                <p>Кликните на работу, чтобы рассмотреть детали</p>
             </div>
 
             <div class="gallery-grid">
                 
                 <!-- Работа 1 -->
-                <div class="art-card">
+                <div class="art-card reveal">
                     <img 
                         src="img/small_art1.jpg" 
                         data-full="img/art1.jpg" 
@@ -98,7 +112,7 @@
                 </div>
 
                 <!-- Работа 2 -->
-                <div class="art-card">
+                <div class="art-card reveal delay-100">
                     <img 
                         src="img/small_art2.jpg" 
                         data-full="img/art2.jpg" 
@@ -113,7 +127,7 @@
                 </div>
 
                 <!-- Работа 3 -->
-                <div class="art-card">
+                <div class="art-card reveal delay-200">
                     <img 
                         src="img/small_art3.jpg" 
                         data-full="img/art3.jpg" 
@@ -128,7 +142,7 @@
                 </div>
                 
                 <!-- Работа 4 -->
-                <div class="art-card">
+                <div class="art-card reveal delay-300">
                     <img 
                         src="img/small_art4.jpg" 
                         data-full="img/art4.jpg" 
@@ -148,11 +162,11 @@
 
     <!-- КОНТАКТЫ -->
     <section id="contacts" class="contacts">
-        <div class="container contact-content">
+        <div class="container contact-content reveal">
             <h2>Сотрудничество</h2>
             <p>Открыт для заказов и предложений.</p>
             
-            <!-- НОМЕР ТЕЛЕФОНА (Кликабельный) -->
+            <!-- Телефон -->
             <div style="margin-bottom: 30px;">
                 <a href="tel:+79129047754" style="color: var(--accent); font-size: 1.8rem; text-decoration: none; font-family: var(--font-head); font-weight: bold;">
                     +7 912 904 7754
@@ -161,10 +175,7 @@
             
             <div class="links">
                 <a href="mailto:email@example.com" class="btn btn-dark">Написать письмо</a>
-                
-                <!-- Ссылка на Telegram -->
                 <a href="https://t.me/vargan86" target="_blank" class="social-link">Telegram (@vargan86)</a>
-                
                 <a href="https://instagram.com" target="_blank" class="social-link">Instagram</a>
             </div>
         </div>
@@ -174,240 +185,201 @@
         <p>© 2025 Art Vargan. Все права защищены.</p>
     </footer>
 
-    <!-- МОДАЛЬНОЕ ОКНО (ЛАЙТБОКС) -->
+    <!-- МОДАЛЬНОЕ ОКНО -->
     <div id="lightbox" class="lightbox">
-        <!-- Кнопка закрыть -->
         <span class="close-btn">&times;</span>
-        
-        <!-- Кнопка Влево -->
         <div class="lb-arrow lb-prev">&#10094;</div>
-        
-        <!-- Картинка -->
         <img class="lightbox-img" src="" alt="Просмотр">
-        
-        <!-- Кнопка Вправо -->
         <div class="lb-arrow lb-next">&#10095;</div>
     </div>
 
     <!-- СКРИПТЫ -->
     <script>
-    // 1. Мобильное меню
-    const hamburger = document.querySelector('.hamburger');
-    const nav = document.querySelector('.nav');
+        // 1. АНИМАЦИЯ ПРИ СКРОЛЛЕ (Scroll Reveal)
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100; // Через сколько пикселей показывать
 
-    if(hamburger) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            nav.classList.toggle('active');
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        // Запускаем один раз при загрузке, чтобы показать то, что уже на экране
+        reveal();
+
+
+        // 2. Мобильное меню
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('.nav');
+
+        if(hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                nav.classList.toggle('active');
+            });
+        }
+        document.querySelectorAll('.nav-list a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            });
         });
-    }
 
-    document.querySelectorAll('.nav-list a').forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            nav.classList.remove('active');
-        });
-    });
+        // 3. Лайтбокс PRO (Зум + Свайпы + Предзагрузка)
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.querySelector('.lightbox-img');
+        const closeBtn = document.querySelector('.close-btn');
+        const prevBtn = document.querySelector('.lb-prev');
+        const nextBtn = document.querySelector('.lb-next');
+        const allImages = Array.from(document.querySelectorAll('.art-card img'));
+        let currentIndex = 0;
+        let zoomLevel = 1;      
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let translateX = 0, translateY = 0;
+        let currentTranslateX = 0, currentTranslateY = 0;
 
-    // 2. Лайтбокс ULTRA (Зум x3 + Перетаскивание + Свайпы)
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.querySelector('.lightbox-img');
-    const closeBtn = document.querySelector('.close-btn');
-    const prevBtn = document.querySelector('.lb-prev');
-    const nextBtn = document.querySelector('.lb-next');
-    
-    const allImages = Array.from(document.querySelectorAll('.art-card img'));
-    let currentIndex = 0;
+        function preloadImage(url) {
+            if (!url) return;
+            const img = new Image();
+            img.src = url;
+        }
 
-    // Переменные для Зума и Перетаскивания
-    let zoomLevel = 1;      // 1 -> 2 -> 3
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let translateX = 0, translateY = 0;
-    let currentTranslateX = 0, currentTranslateY = 0;
-
-    // Вспомогательная функция предзагрузки
-    function preloadImage(url) {
-        if (!url) return;
-        const img = new Image();
-        img.src = url;
-    }
-
-    // Сброс зума (вызываем при переключении слайдов)
-    function resetZoom() {
-        zoomLevel = 1;
-        translateX = 0;
-        translateY = 0;
-        currentTranslateX = 0;
-        currentTranslateY = 0;
-        updateTransform();
-        lightboxImg.classList.remove('grab', 'grabbing');
-        lightboxImg.style.cursor = 'zoom-in';
-    }
-
-    // Применение трансформации к картинке
-    function updateTransform() {
-        lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
-    }
-
-    // Функция открытия картинки
-    function showImage(index) {
-        if (index >= allImages.length) index = 0;
-        if (index < 0) index = allImages.length - 1;
-        
-        // СБРАСЫВАЕМ ЗУМ ПЕРЕД СМЕНОЙ
-        resetZoom();
-
-        currentIndex = index;
-        const currentImg = allImages[index];
-        const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
-        
-        lightboxImg.style.opacity = 0.5;
-        lightboxImg.src = fullQualitySrc;
-        
-        lightboxImg.onload = () => { lightboxImg.style.opacity = 1; };
-        if (lightboxImg.complete) { lightboxImg.style.opacity = 1; }
-
-        // Предзагрузка соседей
-        let nextIndex = (index + 1) % allImages.length;
-        let prevIndex = (index - 1 + allImages.length) % allImages.length;
-        
-        const nextSrc = allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src;
-        const prevSrc = allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src;
-        
-        preloadImage(nextSrc);
-        preloadImage(prevSrc);
-    }
-
-    // --- ЛОГИКА ЗУМА (ДВОЙНОЙ ТАП / КЛИК) ---
-    lightboxImg.addEventListener('dblclick', (e) => {
-        e.preventDefault(); // Чтобы не было зума страницы на айфонах
-        
-        // Цикл: 1 -> 2 -> 3 -> 1
-        if (zoomLevel === 1) zoomLevel = 2;
-        else if (zoomLevel === 2) zoomLevel = 3;
-        else zoomLevel = 1;
-
-        if (zoomLevel === 1) {
-            // Если вернулись к 1x - сбрасываем позицию
-            resetZoom();
-        } else {
-            // Если увеличили - включаем режим перетаскивания
-            lightboxImg.style.cursor = 'grab';
-            lightboxImg.classList.add('grab');
+        function resetZoom() {
+            zoomLevel = 1;
+            translateX = 0; translateY = 0;
+            currentTranslateX = 0; currentTranslateY = 0;
             updateTransform();
+            lightboxImg.classList.remove('grab', 'grabbing');
+            lightboxImg.style.cursor = 'zoom-in';
         }
-    });
 
-    // --- ЛОГИКА ПЕРЕТАСКИВАНИЯ (МЫШЬ + ПАЛЕЦ) ---
-    function startDrag(clientX, clientY) {
-        if (zoomLevel === 1) return; // Нельзя двигать, если не увеличено
-        isDragging = true;
-        startX = clientX - currentTranslateX;
-        startY = clientY - currentTranslateY;
-        lightboxImg.classList.add('grabbing');
-    }
-
-    function moveDrag(clientX, clientY) {
-        if (!isDragging) return;
-        
-        translateX = clientX - startX;
-        translateY = clientY - startY;
-        updateTransform();
-    }
-
-    function endDrag() {
-        isDragging = false;
-        currentTranslateX = translateX;
-        currentTranslateY = translateY;
-        lightboxImg.classList.remove('grabbing');
-    }
-
-    // События мыши
-    lightboxImg.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // Чтобы картинка не "призраком" тянулась
-        startDrag(e.clientX, e.clientY);
-    });
-    window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
-    window.addEventListener('mouseup', endDrag);
-
-    // События пальца (Touch)
-    lightboxImg.addEventListener('touchstart', (e) => {
-        if (zoomLevel > 1) {
-            // Если увеличено - это начало драга, а не свайпа
-            startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        function updateTransform() {
+            lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
         }
-    }, {passive: false}); // passive: false важно для отмены скролла
 
-    lightboxImg.addEventListener('touchmove', (e) => {
-        if (zoomLevel > 1 && isDragging) {
-            e.preventDefault(); // Запрещаем скролл страницы пока тянем картинку
-            moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+        function showImage(index) {
+            if (index >= allImages.length) index = 0;
+            if (index < 0) index = allImages.length - 1;
+            
+            resetZoom(); // Сброс зума
+            currentIndex = index;
+            const currentImg = allImages[index];
+            const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
+            
+            lightboxImg.style.opacity = 0.5;
+            lightboxImg.src = fullQualitySrc;
+            
+            lightboxImg.onload = () => { lightboxImg.style.opacity = 1; };
+            if (lightboxImg.complete) { lightboxImg.style.opacity = 1; }
+
+            // Предзагрузка
+            let nextIndex = (index + 1) % allImages.length;
+            let prevIndex = (index - 1 + allImages.length) % allImages.length;
+            const nextSrc = allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src;
+            const prevSrc = allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src;
+            preloadImage(nextSrc);
+            preloadImage(prevSrc);
         }
-    }, {passive: false});
 
-    lightboxImg.addEventListener('touchend', endDrag);
-
-
-    // --- ОБЩИЕ СОБЫТИЯ ---
-    allImages.forEach((img, index) => {
-        img.addEventListener('click', () => {
-            showImage(index);
-            lightbox.classList.add('active');
-        });
-    });
-
-    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1); });
-    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1); });
-    
-    const closeLightbox = () => { lightbox.classList.remove('active'); resetZoom(); };
-    closeBtn.addEventListener('click', closeLightbox);
-    
-    // Закрытие по клику на фон (только если не тащим картинку)
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (!lightbox.classList.contains('active')) return;
-        if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
-        if (e.key === 'ArrowRight') showImage(currentIndex + 1);
-        if (e.key === 'Escape') closeLightbox();
-    });
-
-    // --- СВАЙПЫ (ПЕРЕКЛЮЧЕНИЕ СЛАЙДОВ) ---
-    // Работают ТОЛЬКО если картинка не увеличена (Zoom === 1)
-    let swipeStartX = 0;
-    let swipeEndX = 0;
-
-    lightbox.addEventListener('touchstart', (e) => {
-        // Запоминаем точку старта только если кликнули НЕ по увеличенной картинке
-        // или кликнули по фону
-        if (zoomLevel === 1 || e.target === lightbox) {
-            swipeStartX = e.changedTouches[0].screenX;
-        }
-    }, {passive: true});
-
-    lightbox.addEventListener('touchend', (e) => {
-        if (zoomLevel === 1 || e.target === lightbox) {
-            swipeEndX = e.changedTouches[0].screenX;
-            // Проверка длины свайпа
-            if (swipeStartX - swipeEndX > 50) showImage(currentIndex + 1);
-            if (swipeEndX - swipeStartX > 50) showImage(currentIndex - 1);
-        }
-    }, {passive: true});
-
-
-    // 3. Плавная прокрутка
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+        // ЗУМ
+        lightboxImg.addEventListener('dblclick', (e) => {
             e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId && targetId !== '#') {
-                document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+            if (zoomLevel === 1) zoomLevel = 2;
+            else if (zoomLevel === 2) zoomLevel = 3;
+            else zoomLevel = 1;
+
+            if (zoomLevel === 1) resetZoom();
+            else {
+                lightboxImg.style.cursor = 'grab';
+                lightboxImg.classList.add('grab');
+                updateTransform();
             }
         });
-    });
-</script>
+
+        // ДРАГ (Перетаскивание)
+        function startDrag(clientX, clientY) {
+            if (zoomLevel === 1) return;
+            isDragging = true;
+            startX = clientX - currentTranslateX;
+            startY = clientY - currentTranslateY;
+            lightboxImg.classList.add('grabbing');
+        }
+        function moveDrag(clientX, clientY) {
+            if (!isDragging) return;
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            updateTransform();
+        }
+        function endDrag() {
+            isDragging = false;
+            currentTranslateX = translateX;
+            currentTranslateY = translateY;
+            lightboxImg.classList.remove('grabbing');
+        }
+
+        lightboxImg.addEventListener('mousedown', (e) => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
+        window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+        window.addEventListener('mouseup', endDrag);
+
+        lightboxImg.addEventListener('touchstart', (e) => {
+            if (zoomLevel > 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }, {passive: false});
+
+        lightboxImg.addEventListener('touchmove', (e) => {
+            if (zoomLevel > 1 && isDragging) {
+                e.preventDefault();
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, {passive: false});
+        lightboxImg.addEventListener('touchend', endDrag);
+
+        // Общие события
+        allImages.forEach((img, index) => {
+            img.addEventListener('click', () => { showImage(index); lightbox.classList.add('active'); });
+        });
+        prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1); });
+        nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1); });
+        
+        const closeLightbox = () => { lightbox.classList.remove('active'); resetZoom(); };
+        closeBtn.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+            if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Свайпы (если не зум)
+        let swipeStartX = 0;
+        let swipeEndX = 0;
+        lightbox.addEventListener('touchstart', (e) => {
+            if (zoomLevel === 1 || e.target === lightbox) swipeStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+        lightbox.addEventListener('touchend', (e) => {
+            if (zoomLevel === 1 || e.target === lightbox) {
+                swipeEndX = e.changedTouches[0].screenX;
+                if (swipeStartX - swipeEndX > 50) showImage(currentIndex + 1);
+                if (swipeEndX - swipeStartX > 50) showImage(currentIndex - 1);
+            }
+        }, {passive: true});
+
+        // Плавная прокрутка
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
 </body>
 </html>
