@@ -199,7 +199,7 @@
         });
     });
 
-    // 2. Лайтбокс с ПРЕДЗАГРУЗКОЙ
+    // 2. Лайтбокс ULTRA (Зум x3 + Перетаскивание + Свайпы)
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.querySelector('.lightbox-img');
     const closeBtn = document.querySelector('.close-btn');
@@ -209,6 +209,13 @@
     const allImages = Array.from(document.querySelectorAll('.art-card img'));
     let currentIndex = 0;
 
+    // Переменные для Зума и Перетаскивания
+    let zoomLevel = 1;      // 1 -> 2 -> 3
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+    let currentTranslateX = 0, currentTranslateY = 0;
+
     // Вспомогательная функция предзагрузки
     function preloadImage(url) {
         if (!url) return;
@@ -216,37 +223,123 @@
         img.src = url;
     }
 
+    // Сброс зума (вызываем при переключении слайдов)
+    function resetZoom() {
+        zoomLevel = 1;
+        translateX = 0;
+        translateY = 0;
+        currentTranslateX = 0;
+        currentTranslateY = 0;
+        updateTransform();
+        lightboxImg.classList.remove('grab', 'grabbing');
+        lightboxImg.style.cursor = 'zoom-in';
+    }
+
+    // Применение трансформации к картинке
+    function updateTransform() {
+        lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+    }
+
+    // Функция открытия картинки
     function showImage(index) {
-        // Зацикливание
         if (index >= allImages.length) index = 0;
         if (index < 0) index = allImages.length - 1;
         
+        // СБРАСЫВАЕМ ЗУМ ПЕРЕД СМЕНОЙ
+        resetZoom();
+
         currentIndex = index;
-        
-        // Получаем ссылку на текущую
         const currentImg = allImages[index];
         const fullQualitySrc = currentImg.getAttribute('data-full') || currentImg.src;
         
-        // Меняем картинку
+        lightboxImg.style.opacity = 0.5;
         lightboxImg.src = fullQualitySrc;
-
-        // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ: ПРЕДЗАГРУЗКА ---
-        // Как только открыли текущую, сразу качаем следующую и предыдущую
         
-        // Следующая
-        let nextIndex = index + 1;
-        if (nextIndex >= allImages.length) nextIndex = 0;
-        const nextSrc = allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src;
-        preloadImage(nextSrc);
+        lightboxImg.onload = () => { lightboxImg.style.opacity = 1; };
+        if (lightboxImg.complete) { lightboxImg.style.opacity = 1; }
 
-        // Предыдущая (для свайпа назад)
-        let prevIndex = index - 1;
-        if (prevIndex < 0) prevIndex = allImages.length - 1;
+        // Предзагрузка соседей
+        let nextIndex = (index + 1) % allImages.length;
+        let prevIndex = (index - 1 + allImages.length) % allImages.length;
+        
+        const nextSrc = allImages[nextIndex].getAttribute('data-full') || allImages[nextIndex].src;
         const prevSrc = allImages[prevIndex].getAttribute('data-full') || allImages[prevIndex].src;
+        
+        preloadImage(nextSrc);
         preloadImage(prevSrc);
     }
 
-    // События
+    // --- ЛОГИКА ЗУМА (ДВОЙНОЙ ТАП / КЛИК) ---
+    lightboxImg.addEventListener('dblclick', (e) => {
+        e.preventDefault(); // Чтобы не было зума страницы на айфонах
+        
+        // Цикл: 1 -> 2 -> 3 -> 1
+        if (zoomLevel === 1) zoomLevel = 2;
+        else if (zoomLevel === 2) zoomLevel = 3;
+        else zoomLevel = 1;
+
+        if (zoomLevel === 1) {
+            // Если вернулись к 1x - сбрасываем позицию
+            resetZoom();
+        } else {
+            // Если увеличили - включаем режим перетаскивания
+            lightboxImg.style.cursor = 'grab';
+            lightboxImg.classList.add('grab');
+            updateTransform();
+        }
+    });
+
+    // --- ЛОГИКА ПЕРЕТАСКИВАНИЯ (МЫШЬ + ПАЛЕЦ) ---
+    function startDrag(clientX, clientY) {
+        if (zoomLevel === 1) return; // Нельзя двигать, если не увеличено
+        isDragging = true;
+        startX = clientX - currentTranslateX;
+        startY = clientY - currentTranslateY;
+        lightboxImg.classList.add('grabbing');
+    }
+
+    function moveDrag(clientX, clientY) {
+        if (!isDragging) return;
+        
+        translateX = clientX - startX;
+        translateY = clientY - startY;
+        updateTransform();
+    }
+
+    function endDrag() {
+        isDragging = false;
+        currentTranslateX = translateX;
+        currentTranslateY = translateY;
+        lightboxImg.classList.remove('grabbing');
+    }
+
+    // События мыши
+    lightboxImg.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // Чтобы картинка не "призраком" тянулась
+        startDrag(e.clientX, e.clientY);
+    });
+    window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+    window.addEventListener('mouseup', endDrag);
+
+    // События пальца (Touch)
+    lightboxImg.addEventListener('touchstart', (e) => {
+        if (zoomLevel > 1) {
+            // Если увеличено - это начало драга, а не свайпа
+            startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, {passive: false}); // passive: false важно для отмены скролла
+
+    lightboxImg.addEventListener('touchmove', (e) => {
+        if (zoomLevel > 1 && isDragging) {
+            e.preventDefault(); // Запрещаем скролл страницы пока тянем картинку
+            moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, {passive: false});
+
+    lightboxImg.addEventListener('touchend', endDrag);
+
+
+    // --- ОБЩИЕ СОБЫТИЯ ---
     allImages.forEach((img, index) => {
         img.addEventListener('click', () => {
             showImage(index);
@@ -254,18 +347,13 @@
         });
     });
 
-    prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showImage(currentIndex - 1);
-    });
-
-    nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showImage(currentIndex + 1);
-    });
-
-    const closeLightbox = () => lightbox.classList.remove('active');
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1); });
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1); });
+    
+    const closeLightbox = () => { lightbox.classList.remove('active'); resetZoom(); };
     closeBtn.addEventListener('click', closeLightbox);
+    
+    // Закрытие по клику на фон (только если не тащим картинку)
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
     });
@@ -277,19 +365,28 @@
         if (e.key === 'Escape') closeLightbox();
     });
 
-    // Свайпы
-    let touchStartX = 0;
-    let touchEndX = 0;
+    // --- СВАЙПЫ (ПЕРЕКЛЮЧЕНИЕ СЛАЙДОВ) ---
+    // Работают ТОЛЬКО если картинка не увеличена (Zoom === 1)
+    let swipeStartX = 0;
+    let swipeEndX = 0;
 
     lightbox.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
+        // Запоминаем точку старта только если кликнули НЕ по увеличенной картинке
+        // или кликнули по фону
+        if (zoomLevel === 1 || e.target === lightbox) {
+            swipeStartX = e.changedTouches[0].screenX;
+        }
     }, {passive: true});
 
     lightbox.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        if (touchStartX - touchEndX > 50) showImage(currentIndex + 1);
-        if (touchEndX - touchStartX > 50) showImage(currentIndex - 1);
+        if (zoomLevel === 1 || e.target === lightbox) {
+            swipeEndX = e.changedTouches[0].screenX;
+            // Проверка длины свайпа
+            if (swipeStartX - swipeEndX > 50) showImage(currentIndex + 1);
+            if (swipeEndX - swipeStartX > 50) showImage(currentIndex - 1);
+        }
     }, {passive: true});
+
 
     // 3. Плавная прокрутка
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -297,9 +394,7 @@
             e.preventDefault();
             const targetId = this.getAttribute('href');
             if (targetId && targetId !== '#') {
-                document.querySelector(targetId).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
             }
         });
     });

@@ -206,7 +206,21 @@ h1, h2, h3 {
     max-height: 90%; 
     box-shadow: 0 0 30px rgba(0,0,0,0.5); 
     border: 2px solid #fff; 
-    transition: opacity 0.2s ease;
+    
+    /* Важно для зума: */
+    transition: transform 0.3s ease; /* Плавный зум */
+    transform-origin: center center; /* Увеличение от центра */
+    cursor: zoom-in; /* Курсор лупы */
+    touch-action: none; /* Отключаем стандартные жесты браузера на картинке */
+}
+
+/* Когда картинка увеличена, меняем курсор на "руку" */
+.lightbox-img.grab {
+    cursor: grab;
+}
+.lightbox-img.grabbing {
+    cursor: grabbing;
+    transition: none; /* Убираем плавность при перетаскивании, чтобы не тормозило */
 }
 .close-btn {
     position: absolute; top: 20px; right: 30px;
